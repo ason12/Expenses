@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Gautam's Home Construction Daily Expenses</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --secondary-color: #1e40af;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --border: #e2e8f0;
+        --error: #ef4444;
+        --success: #22c55e;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        background-color: var(--background);
+        padding: 1.5rem;
+        max-width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        color: var(--text-primary);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      h1 {
+        color: var(--text-primary);
+        text-align: center;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+        font-size: 1.8rem;
+        font-weight: 600;
+        padding: 0 10px;
+        line-height: 1.3;
+      }
+
+      .input-container {
+        background: var(--surface);
+        padding: 1.8rem;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1),
+          0 1px 2px -1px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        border: 1px solid var(--border);
+      }
+
+      label {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      input[type="tel"] {
+        padding: 1rem;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        width: 100%;
+        font-size: 1.1rem;
+        -webkit-appearance: none;
+        appearance: none;
+        transition: all 0.2s ease;
+        color: var(--text-primary);
+        background-color: var(--surface);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+
+      input[type="tel"]:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        transform: translateY(-1px);
+      }
+
+      input[type="tel"]::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.7;
+      }
+
+      /* Remove spinner buttons for number input */
+      input[type="tel"]::-webkit-outer-spin-button,
+      input[type="tel"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        font-size: 1.1rem;
+        width: 100%;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button:active {
+        transform: scale(0.98);
+        background-color: var(--secondary-color);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 20px;
+        background: var(--surface);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1),
+          0 1px 2px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+      }
+
+      .table-container {
+        flex: 1;
+        overflow-y: auto;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1),
+          0 1px 2px -1px rgba(0, 0, 0, 0.1);
+        scrollbar-width: none; /* For Firefox */
+        -ms-overflow-style: none; /* For Internet Explorer and Edge */
+        margin-bottom: 80px; /* Add space above the total bar */
+      }
+
+      .table-container::-webkit-scrollbar {
+        display: none; /* For Chrome, Safari and Opera */
+      }
+
+      thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--background);
+      }
+
+      thead tr {
+        background: var(--background);
+      }
+
+      tbody {
+        background: var(--surface);
+      }
+
+      th {
+        background-color: var(--background);
+        color: var(--text-secondary);
+        font-weight: 500;
+        padding: 1.2rem 1rem;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid var(--border);
+        text-align: center;
+      }
+
+      td {
+        padding: 1.2rem 1rem;
+        text-align: center;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-primary);
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 0.8rem;
+        justify-content: center;
+      }
+
+      .action-buttons button {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+        min-width: 70px;
+      }
+
+      .action-buttons button:first-child {
+        background-color: var(--success);
+      }
+
+      .action-buttons button:last-child {
+        background-color: var(--error);
+      }
+
+      .total {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        background: var(--surface);
+        padding: 1.2rem 1.5rem;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+        color: var(--text-primary);
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--border);
+        font-weight: 500;
+        z-index: 999;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        margin-bottom: env(safe-area-inset-bottom, 0);
+      }
+
+      .download-pdf-button {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        width: auto;
+        min-width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: #4f46e5;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        font-size: 1rem;
+        color: white;
+      }
+
+      .download-pdf-button svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+      }
+
+      .download-pdf-button:active {
+        transform: scale(0.95);
+      }
+
+      @media (hover: hover) {
+        .download-pdf-button:hover {
+          transform: scale(1.05);
+        }
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1001;
+      }
+
+      .modal-content {
+        background-color: var(--surface);
+        margin: 20% auto;
+        padding: 2rem;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+      }
+
+      .modal-content h3 {
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+
+      .modal-content input {
+        width: 100%;
+        margin: 0.8rem 0;
+        padding: 1rem;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        font-size: 1.1rem;
+      }
+
+      .modal-content input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .modal-buttons {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+      }
+
+      .modal-buttons button {
+        flex: 1;
+        max-width: 120px;
+      }
+
+      .modal-buttons button:first-child {
+        background-color: var(--text-secondary);
+      }
+
+      /* iPhone 13 Pro Max and similar devices */
+      @media only screen and (max-width: 428px) {
+        body {
+          padding: 1rem 0.8rem;
+          padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 1rem));
+        }
+
+        h1 {
+          font-size: 1.5rem;
+          margin-bottom: 1.2rem;
+          padding: 0 0.5rem;
+        }
+
+        .input-container {
+          padding: 1.2rem;
+          border-radius: 12px;
+          gap: 0.8rem;
+          margin-bottom: 1.5rem;
+        }
+
+        input[type="tel"] {
+          padding: 0.9rem;
+          font-size: 1rem;
+          border-radius: 10px;
+        }
+
+        button {
+          padding: 0.9rem;
+          font-size: 1rem;
+          border-radius: 10px;
+        }
+
+        table {
+          font-size: 0.9rem;
+          border-radius: 12px;
+          margin-top: 1rem;
+        }
+
+        th {
+          padding: 0.8rem 0.5rem;
+          font-size: 0.8rem;
+        }
+
+        td {
+          padding: 0.8rem 0.5rem;
+        }
+
+        .action-buttons {
+          gap: 0.5rem;
+        }
+
+        .action-buttons button {
+          padding: 0.6rem;
+          font-size: 0.8rem;
+          min-width: 55px;
+        }
+
+        .total {
+          padding: 1rem 1.2rem;
+          font-size: 1.1rem;
+          border-radius: 12px 12px 0 0;
+        }
+
+        .modal-content {
+          margin: 15% auto;
+          padding: 1.2rem;
+          width: 95%;
+          border-radius: 12px;
+        }
+
+        .modal-content h3 {
+          font-size: 1.2rem;
+          margin-bottom: 1rem;
+        }
+
+        .modal-content input {
+          padding: 0.8rem;
+          font-size: 1rem;
+          margin: 0.5rem 0;
+        }
+
+        .modal-buttons {
+          margin-top: 1.5rem;
+          gap: 0.8rem;
+        }
+
+        .modal-buttons button {
+          padding: 0.8rem;
+          font-size: 0.9rem;
+        }
+
+        .download-pdf-button {
+          top: 1rem;
+          right: 1rem;
+        }
+      }
+
+      /* Landscape orientation for iPhone 13 Pro Max */
+      @media only screen and (max-width: 926px) and (orientation: landscape) {
+        body {
+          padding-bottom: calc(4rem + env(safe-area-inset-bottom, 1rem));
+        }
+
+        .total {
+          padding: 0.8rem 1.2rem;
+        }
+      }
+
+      /* Notch area safety for iPhone 13 Pro Max */
+      @supports (padding: max(0px)) {
+        body {
+          padding-left: max(0.8rem, env(safe-area-inset-left));
+          padding-right: max(0.8rem, env(safe-area-inset-right));
+          padding-bottom: max(0.8rem, env(safe-area-inset-bottom));
+          padding-top: max(0.8rem, env(safe-area-inset-top));
+        }
+
+        .modal {
+          padding-top: env(safe-area-inset-top);
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+      }
+
+      sub {
+        font-size: 0.75em;
+        vertical-align: sub;
+        line-height: 0;
+      }
+
+      .amount-container {
+        display: inline-flex;
+        align-items: baseline;
+        white-space: nowrap;
+      }
+
+      .amount-whole {
+        font-weight: 500;
+      }
+
+      .amount-decimal {
+        font-size: 0.75em;
+        margin-left: 1px;
+        color: var(--text-secondary);
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      onclick="downloadPDF()"
+      class="download-pdf-button"
+      title="Download PDF Report"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path
+          d="M12 16L7 11H10V4H14V11H17L12 16Z M18 20H6C5.45 20 5 19.55 5 19V15H7V18H17V15H19V19C19 19.55 18.55 20 18 20Z"
+        />
+      </svg>
+    </button>
+
+    <h1>🏗️ Gautam's Home Construction Daily Expenses</h1>
+
+    <div class="input-container">
+      <label for="expense">Enter Today's Expense:</label>
+      <input
+        type="tel"
+        id="expense"
+        min="0"
+        pattern="[0-9]*[.]?[0-9]*"
+        placeholder="Enter amount in Rs."
+        maxlength="10"
+        autocomplete="off"
+      />
+      <button onclick="addExpense()">Add Expense</button>
+    </div>
+
+    <div class="table-container">
+      <table id="expenseTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Expense (Rs.)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="expenseList"></tbody>
+      </table>
+    </div>
+
+    <div class="total">
+      <span>Total Expenses:</span> <span id="totalExpenses">Rs. 0</span>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <h3>Edit Expense</h3>
+        <div>
+          <label for="editDate">Date:</label>
+          <input type="date" id="editDate" required />
+        </div>
+        <div>
+          <label for="editAmount">Amount (Rs.):</label>
+          <input type="number" id="editAmount" min="0" step="0.01" />
+        </div>
+        <div class="modal-buttons">
+          <button onclick="closeEditModal()">Cancel</button>
+          <button onclick="saveEdit()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content">
+        <h3>Delete Expense</h3>
+        <p>Are you sure you want to delete this expense?</p>
+        <div class="modal-buttons">
+          <button onclick="closeDeleteModal()">Cancel</button>
+          <button
+            onclick="confirmDelete()"
+            style="background-color: var(--error)"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let total = 0;
+      let currentEditRow = null;
+      let currentDeleteRow = null;
+
+      // Load expenses from localStorage when page loads
+      window.onload = function () {
+        loadExpenses();
+      };
+
+      function formatDate(date) {
+        return new Date(date).toLocaleDateString();
+      }
+
+      function formatNumberWithCommas(number) {
+        const parts = number.toFixed(2).split(".");
+        let wholePart = parts[0];
+        const decimalPart = parts[1];
+
+        // Only add leading zeros if number is 1000 or greater
+        if (number >= 1000) {
+          while (wholePart.length < 3) {
+            wholePart = "0" + wholePart;
+          }
+        }
+
+        // Format from right to left
+        let formattedNumber = "";
+
+        // First group of 3 from right
+        const lastThree = wholePart.substring(wholePart.length - 3);
+        const remaining = wholePart.substring(0, wholePart.length - 3);
+        formattedNumber = lastThree;
+
+        // Add remaining digits in groups of 2
+        if (remaining) {
+          for (let i = remaining.length; i > 0; i -= 2) {
+            if (formattedNumber) {
+              formattedNumber =
+                remaining.substring(Math.max(0, i - 2), i) +
+                "," +
+                formattedNumber;
+            } else {
+              formattedNumber =
+                remaining.substring(Math.max(0, i - 2), i) + formattedNumber;
+            }
+          }
+        }
+
+        return `<span class="amount-container">Rs. <span class="amount-whole">${formattedNumber}</span><span class="amount-decimal">.${decimalPart}</span></span>`;
+      }
+
+      function saveToLocalStorage() {
+        const expenses = [];
+        const rows = document
+          .getElementById("expenseList")
+          .getElementsByTagName("tr");
+
+        for (let row of rows) {
+          expenses.push({
+            date: row.dataset.date,
+            amount: parseFloat(row.cells[1].dataset.amount),
+          });
+        }
+
+        localStorage.setItem("expenses", JSON.stringify(expenses));
+        localStorage.setItem("total", total);
+      }
+
+      function loadExpenses() {
+        const savedExpenses = localStorage.getItem("expenses");
+        const savedTotal = localStorage.getItem("total");
+
+        if (savedExpenses) {
+          const expenses = JSON.parse(savedExpenses);
+          // Reverse the array to show newest entries first
+          expenses.reverse().forEach((expense) => {
+            addExpenseToTable(expense.date, expense.amount);
+          });
+        }
+
+        if (savedTotal) {
+          total = parseFloat(savedTotal);
+          updateTotal();
+        }
+      }
+
+      function addExpenseToTable(date, amount) {
+        const tbody = document.getElementById("expenseList");
+        const row = tbody.insertRow(0);
+
+        row.insertCell(0).textContent = formatDate(date);
+        const amountCell = row.insertCell(1);
+        amountCell.innerHTML = formatNumberWithCommas(amount);
+        amountCell.dataset.amount = amount;
+        row.dataset.date = date;
+
+        const actionsCell = row.insertCell(2);
+        actionsCell.innerHTML = `
+          <div class="action-buttons">
+            <button onclick="editExpense(this)">Edit</button>
+            <button onclick="deleteExpense(this)">Delete</button>
+          </div>
+        `;
+      }
+
+      function addExpense() {
+        const expenseInput = document.getElementById("expense");
+        const amount = parseFloat(expenseInput.value);
+
+        if (isNaN(amount) || amount <= 0) {
+          alert("Please enter a valid expense amount");
+          return;
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+        addExpenseToTable(today, amount);
+
+        total += amount;
+        updateTotal();
+        expenseInput.value = "";
+        saveToLocalStorage();
+      }
+
+      function editExpense(button) {
+        const row = button.closest("tr");
+        const amountCell = row.cells[1];
+        const currentAmount = parseFloat(amountCell.dataset.amount);
+        const currentDate = row.dataset.date;
+
+        currentEditRow = row;
+        const editAmount = document.getElementById("editAmount");
+        const editDate = document.getElementById("editDate");
+
+        editAmount.value = currentAmount;
+        editDate.value = currentDate;
+
+        document.getElementById("editModal").style.display = "block";
+      }
+
+      function closeEditModal() {
+        document.getElementById("editModal").style.display = "none";
+        currentEditRow = null;
+      }
+
+      function saveEdit() {
+        const editAmount = document.getElementById("editAmount");
+        const editDate = document.getElementById("editDate");
+        const newAmount = parseFloat(editAmount.value);
+        const newDate = editDate.value;
+
+        if (isNaN(newAmount) || newAmount <= 0) {
+          alert("Please enter a valid amount");
+          return;
+        }
+
+        if (!newDate) {
+          alert("Please select a date");
+          return;
+        }
+
+        const amountCell = currentEditRow.cells[1];
+        const oldAmount = parseFloat(amountCell.dataset.amount);
+
+        // Update date and amount
+        currentEditRow.cells[0].textContent = formatDate(newDate);
+        amountCell.innerHTML = formatNumberWithCommas(newAmount);
+        amountCell.dataset.amount = newAmount;
+        currentEditRow.dataset.date = newDate;
+
+        // Update total
+        total = total - oldAmount + newAmount;
+        updateTotal();
+        closeEditModal();
+        saveToLocalStorage();
+      }
+
+      function deleteExpense(button) {
+        currentDeleteRow = button.closest("tr");
+        document.getElementById("deleteModal").style.display = "block";
+      }
+
+      function closeDeleteModal() {
+        document.getElementById("deleteModal").style.display = "none";
+        currentDeleteRow = null;
+      }
+
+      function confirmDelete() {
+        const amount = parseFloat(currentDeleteRow.cells[1].dataset.amount);
+        total -= amount;
+        currentDeleteRow.remove();
+        updateTotal();
+        closeDeleteModal();
+        saveToLocalStorage();
+      }
+
+      function updateTotal() {
+        document.getElementById("totalExpenses").innerHTML =
+          formatNumberWithCommas(total);
+        localStorage.setItem("total", total);
+      }
+
+      function downloadPDF() {
+        // Create a wrapper for the PDF content
+        const pdfContent = document.createElement("div");
+        pdfContent.style.padding = "20px";
+
+        // Create a header container
+        const headerContainer = document.createElement("div");
+        headerContainer.style.marginBottom = "30px";
+        headerContainer.style.textAlign = "center";
+
+        // Add title with total
+        const title = document.createElement("h2");
+        title.textContent = "Gautam's Home Construction Expenses Report";
+        title.style.textAlign = "center";
+        title.style.marginBottom = "10px";
+        title.style.fontFamily = "Poppins, sans-serif";
+        title.style.color = "#1e293b";
+        headerContainer.appendChild(title);
+
+        // Add total amount under the title
+        const totalHeading = document.createElement("h3");
+        totalHeading.style.textAlign = "center";
+        totalHeading.style.fontFamily = "Poppins, sans-serif";
+        totalHeading.style.color = "#1e293b";
+        totalHeading.style.fontSize = "1.2rem";
+        totalHeading.style.marginBottom = "20px";
+        totalHeading.innerHTML = `Total Expenses: ${formatNumberWithCommas(
+          total
+        )}`;
+        headerContainer.appendChild(totalHeading);
+
+        // Add date
+        const date = document.createElement("p");
+        date.textContent = "Generated on: " + new Date().toLocaleDateString();
+        date.style.textAlign = "right";
+        date.style.color = "#64748b";
+        date.style.fontSize = "0.9rem";
+        headerContainer.appendChild(date);
+
+        pdfContent.appendChild(headerContainer);
+
+        // Clone the original table
+        const originalTable = document.getElementById("expenseTable");
+        const tableClone = originalTable.cloneNode(true);
+
+        // Remove the Actions column and its data
+        const headers = tableClone.querySelectorAll("th");
+        const rows = tableClone.querySelectorAll("tr");
+
+        // Remove the last header (Actions)
+        if (headers[headers.length - 1]) {
+          headers[headers.length - 1].remove();
+        }
+
+        // Remove the last cell (Actions) from each row
+        rows.forEach((row) => {
+          const cells = row.cells;
+          if (cells[cells.length - 1]) {
+            cells[cells.length - 1].remove();
+          }
+        });
+
+        // Style the table for PDF
+        tableClone.style.width = "100%";
+        tableClone.style.borderCollapse = "collapse";
+        tableClone.style.marginBottom = "20px";
+        tableClone.style.fontFamily = "Poppins, sans-serif";
+
+        // Style all cells
+        tableClone.querySelectorAll("th, td").forEach((cell) => {
+          cell.style.border = "1px solid #e2e8f0";
+          cell.style.padding = "10px";
+          cell.style.textAlign = "center";
+        });
+
+        // Style headers
+        tableClone.querySelectorAll("th").forEach((th) => {
+          th.style.backgroundColor = "#f8fafc";
+          th.style.color = "#64748b";
+        });
+
+        pdfContent.appendChild(tableClone);
+
+        // Configure PDF options
+        const opt = {
+          margin: 1,
+          filename: "construction-expenses-report.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+        };
+
+        // Generate PDF
+        html2pdf().set(opt).from(pdfContent).save();
+      }
+
+      // Close modals when clicking outside
+      window.onclick = function (event) {
+        const editModal = document.getElementById("editModal");
+        const deleteModal = document.getElementById("deleteModal");
+        if (event.target === editModal) {
+          closeEditModal();
+        }
+        if (event.target === deleteModal) {
+          closeDeleteModal();
+        }
+      };
+    </script>
+  </body>
+</html>
